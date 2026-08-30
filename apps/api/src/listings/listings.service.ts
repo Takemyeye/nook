@@ -16,6 +16,11 @@ export interface DistrictCount {
   count: number;
 }
 
+export interface ChannelCount {
+  name: string;
+  count: number;
+}
+
 @Injectable()
 export class ListingsService {
   constructor(private readonly prisma: PrismaService) {}
@@ -52,6 +57,15 @@ export class ListingsService {
       .map((group) => ({ name: group.district, count: group._count._all }));
   }
 
+  async findChannels(): Promise<ChannelCount[]> {
+    const groups = await this.prisma.listing.groupBy({
+      by: ['channel'],
+      _count: { _all: true },
+      orderBy: { _count: { channel: 'desc' } },
+    });
+    return groups.map((group) => ({ name: group.channel, count: group._count._all }));
+  }
+
   async findOne(id: string): Promise<ListingDto> {
     const listing = await this.prisma.listing.findUnique({
       where: { id },
@@ -67,6 +81,9 @@ export class ListingsService {
     const where: Prisma.ListingWhereInput = {};
     if (query.district) {
       where.district = query.district;
+    }
+    if (query.channel) {
+      where.channel = query.channel;
     }
     if (query.minPrice !== undefined || query.maxPrice !== undefined) {
       where.price = {

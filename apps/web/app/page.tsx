@@ -4,7 +4,7 @@ import { FilterBar } from "@/components/filter-bar";
 import { Hero } from "@/components/hero";
 import { ListingGrid } from "@/components/listing-grid";
 import { Pagination } from "@/components/pagination";
-import { getDistricts, getListings } from "@/lib/api";
+import { getChannels, getDistricts, getListings } from "@/lib/api";
 import { plural } from "@/lib/format";
 import type { ListingsQuery } from "@/lib/types";
 
@@ -22,6 +22,7 @@ export default async function HomePage({
   const params = await searchParams;
   const query: ListingsQuery = {
     district: firstValue(params.district),
+    channel: firstValue(params.channel),
     minPrice: firstValue(params.minPrice),
     maxPrice: firstValue(params.maxPrice),
     rooms: firstValue(params.rooms),
@@ -30,7 +31,11 @@ export default async function HomePage({
     sort: firstValue(params.sort),
   };
 
-  const [listings, { districts }] = await Promise.all([getListings(query), getDistricts()]);
+  const [listings, { districts }, { channels }] = await Promise.all([
+    getListings(query),
+    getDistricts(),
+    getChannels(),
+  ]);
   const totalPages = Math.max(1, Math.ceil(listings.total / listings.pageSize));
 
   return (
@@ -47,7 +52,7 @@ export default async function HomePage({
         </div>
         <DistrictChips districts={districts} query={query} />
         <div className="mt-6">
-          <FilterBar query={query} />
+          <FilterBar query={query} channels={channels} />
         </div>
         <p className="mt-8 text-sm text-muted-foreground">
           <span className="font-medium text-foreground">{plural(listings.total, "listing")}</span>{" "}

@@ -1,6 +1,12 @@
 import { cache } from "react";
 import { notFound } from "next/navigation";
-import type { DistrictsResponse, Listing, ListingsQuery, ListingsResponse } from "./types";
+import type {
+  ChannelsResponse,
+  DistrictsResponse,
+  Listing,
+  ListingsQuery,
+  ListingsResponse,
+} from "./types";
 
 const PAGE_SIZE = 12;
 
@@ -28,6 +34,7 @@ export async function getListings(query: ListingsQuery): Promise<ListingsRespons
   return fetchJson<ListingsResponse>(
     `/listings${buildQuery({
       district: query.district,
+      channel: query.channel,
       minPrice: query.minPrice,
       maxPrice: query.maxPrice,
       rooms: query.rooms,
@@ -44,6 +51,14 @@ export async function getDistricts(): Promise<DistrictsResponse> {
     return await fetchJson<DistrictsResponse>("/listings/districts");
   } catch {
     return { districts: [] };
+  }
+}
+
+export async function getChannels(): Promise<ChannelsResponse> {
+  try {
+    return await fetchJson<ChannelsResponse>("/listings/channels");
+  } catch {
+    return { channels: [] };
   }
 }
 

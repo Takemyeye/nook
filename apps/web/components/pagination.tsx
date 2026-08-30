@@ -6,6 +6,7 @@ import type { ListingsQuery } from "@/lib/types";
 function pageHref(query: ListingsQuery, page: number): string {
   return `/${buildQuery({
     district: query.district,
+    channel: query.channel,
     minPrice: query.minPrice,
     maxPrice: query.maxPrice,
     rooms: query.rooms,

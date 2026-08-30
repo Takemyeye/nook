@@ -42,21 +42,41 @@ export const parsePrice = (text: string): ParsedPrice => {
   return { price: null, currency: null };
 };
 
-export const parseRooms = (text: string): number | null => {
-  const match = text.match(/(\d+)\s*[-–]?\s*[хx]?\s*[-–]?\s*(?:комн|room|ოთახ)/i);
-  return match ? Number(match[1]) : null;
+const ROOMS_MIN = 1;
+const ROOMS_MAX = 9;
+
+const matchCount = (text: string, patterns: RegExp[]): number | null => {
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+    if (match) {
+      const count = Number(match[1]);
+      if (count >= ROOMS_MIN && count <= ROOMS_MAX) {
+        return count;
+      }
+    }
+  }
+  return null;
 };
 
-export const parseBedrooms = (text: string): number | null => {
-  const match = text.match(/(\d+)\s*(?:спальн|bedroom)/i);
-  return match ? Number(match[1]) : null;
-};
+const ROOMS_PATTERNS = [
+  /(?<!\d)(\d)(?!\d)[ \t]*[-–]?[ \t]*[хx]?[ \t]*[-–]?[ \t]*(?:комн|room|ოთახ)/i,
+  /(?:комнат\w*|rooms?|ოთახ\w*)[ \t]*[:\-–][ \t]*(\d)(?!\d)/i,
+];
+
+const BEDROOMS_PATTERNS = [
+  /(?<!\d)(\d)(?!\d)[ \t]*[-–]?[ \t]*(?:спальн|bed(?:room)?s?\b|საძინებ)/i,
+  /(?:спальн\w*|bedrooms?|beds?)[ \t]*[:\-–][ \t]*(\d)(?!\d)/i,
+];
+
+export const parseRooms = (text: string): number | null => matchCount(text, ROOMS_PATTERNS);
+
+export const parseBedrooms = (text: string): number | null => matchCount(text, BEDROOMS_PATTERNS);
 
 const AREA_MIN = 15;
 const AREA_MAX = 1000;
 
 export const parseArea = (text: string): number | null => {
-  const match = text.match(/(\d{2,4})\s*(?:кв\.?\s?м|м2|м²|m2|sq)/i);
+  const match = text.match(/(?<!\d)(\d{2,4})[ \t]*(?:кв\.?\s?м|м2|м²|m2|m²|sq\.?\s?m|კვ)/i);
   if (!match) {
     return null;
   }

@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ListingsQueryDto } from './dto/listings-query.dto';
 import { ListingDto } from './listing.mapper';
-import { DistrictCount, ListingsPage, ListingsService } from './listings.service';
+import { ChannelCount, DistrictCount, ListingsPage, ListingsService } from './listings.service';
 
 @Controller('listings')
 export class ListingsController {
@@ -15,6 +15,11 @@ export class ListingsController {
   @Get('districts')
   async findDistricts(): Promise<{ districts: DistrictCount[] }> {
     return { districts: await this.listingsService.findDistricts() };
+  }
+
+  @Get('channels')
+  async findChannels(): Promise<{ channels: ChannelCount[] }> {
+    return { channels: await this.listingsService.findChannels() };
   }
 
   @Get(':id')

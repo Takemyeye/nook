@@ -16,6 +16,10 @@ export class ListingsQueryDto {
   district?: string;
 
   @IsOptional()
+  @IsString()
+  channel?: string;
+
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(0)

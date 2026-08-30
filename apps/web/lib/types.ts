@@ -27,10 +27,15 @@ export type DistrictsResponse = {
   districts: { name: string; count: number }[];
 };
 
+export type ChannelsResponse = {
+  channels: { name: string; count: number }[];
+};
+
 export type SortOption = "newest" | "priceAsc" | "priceDesc";
 
 export type ListingsQuery = {
   district?: string;
+  channel?: string;
   minPrice?: string;
   maxPrice?: string;
   rooms?: string;

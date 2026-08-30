@@ -5,6 +5,7 @@ import type { ListingsQuery } from "@/lib/types";
 function chipHref(query: ListingsQuery, district?: string): string {
   return `/${buildQuery({
     district,
+    channel: query.channel,
     minPrice: query.minPrice,
     maxPrice: query.maxPrice,
     rooms: query.rooms,
@@ -17,6 +18,7 @@ function Chip({ href, active, label }: { href: string; active: boolean; label: s
   return (
     <Link
       href={href}
+      scroll={false}
       className={`whitespace-nowrap rounded-full border px-4 py-2.5 text-sm transition ${
         active
           ? "border-primary bg-primary font-medium text-primary-foreground"
