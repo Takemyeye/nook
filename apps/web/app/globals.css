@@ -1,0 +1,161 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: oklch(0.105 0.018 260);
+  --color-foreground: oklch(0.96 0.01 270);
+  --color-card: oklch(0.145 0.025 255);
+  --color-card-foreground: oklch(0.96 0.01 270);
+  --color-primary: oklch(0.72 0.22 345);
+  --color-primary-foreground: oklch(0.12 0.02 260);
+  --color-secondary: oklch(0.19 0.03 270);
+  --color-secondary-foreground: oklch(0.9 0.01 270);
+  --color-muted: oklch(0.19 0.025 255);
+  --color-muted-foreground: oklch(0.68 0.025 260);
+  --color-accent: oklch(0.28 0.08 290);
+  --color-accent-foreground: oklch(0.96 0.01 270);
+  --color-border: oklch(1 0 0 / 12%);
+  --color-input: oklch(1 0 0 / 14%);
+  --color-ring: oklch(0.72 0.22 345);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+select option {
+  background-color: var(--color-card);
+  color: var(--color-foreground);
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.ambient-square {
+  position: absolute;
+  isolation: isolate;
+  border: 1px solid color-mix(in oklab, var(--color-primary) 22%, transparent);
+  background: color-mix(in oklab, var(--color-accent) 22%, transparent);
+  transform: rotate(22deg);
+  opacity: 0.42;
+  animation: drift 22s ease-in-out infinite;
+}
+
+.ambient-square::before,
+.ambient-square::after {
+  content: "";
+  position: absolute;
+  width: 46%;
+  height: 46%;
+  pointer-events: none;
+  opacity: 0;
+  filter: blur(12px);
+  animation: corner-glow 8s ease-in-out infinite;
+}
+
+.ambient-square::before {
+  top: -16%;
+  left: -16%;
+  background: radial-gradient(
+    circle at 0 0,
+    color-mix(in oklab, var(--color-primary) 82%, transparent),
+    transparent 68%
+  );
+}
+
+.ambient-square::after {
+  right: -16%;
+  bottom: -16%;
+  background: radial-gradient(
+    circle at 100% 100%,
+    color-mix(in oklab, var(--color-primary) 72%, transparent),
+    transparent 68%
+  );
+  animation-delay: -4s;
+}
+
+.ambient-one {
+  width: 280px;
+  height: 280px;
+  left: -90px;
+  top: 18%;
+}
+
+.ambient-two {
+  width: 170px;
+  height: 170px;
+  right: 8%;
+  top: 8%;
+  animation-delay: -7s;
+}
+
+.ambient-three {
+  width: 360px;
+  height: 360px;
+  right: -160px;
+  bottom: 8%;
+  animation-delay: -14s;
+}
+
+.ambient-line {
+  position: absolute;
+  width: 1px;
+  height: 70vh;
+  right: 23%;
+  top: 0;
+  background: linear-gradient(
+    transparent,
+    color-mix(in oklab, var(--color-primary) 24%, transparent),
+    transparent
+  );
+  transform: rotate(18deg);
+  opacity: 0.45;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 26px -22px;
+  }
+}
+
+@keyframes corner-glow {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+  20%,
+  40% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  58% {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-square,
+  .ambient-square::before,
+  .ambient-square::after {
+    animation: none;
+  }
+}
