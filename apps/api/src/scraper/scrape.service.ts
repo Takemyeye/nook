@@ -21,7 +21,8 @@ export interface ScrapeResult {
   skipped: number;
 }
 
-const MAX_PAGES = 30;
+const SAFETY_MAX_PAGES = 2000;
+const PROGRESS_EVERY_PAGES = 20;
 const MAX_PHOTOS = 8;
 const MIN_TEXT_LENGTH = 40;
 const PAGE_DELAY_MS = 700;
@@ -47,7 +48,7 @@ export class ScrapeService {
     const result: ScrapeResult = { created: 0, skipped: 0 };
     let before: number | undefined;
 
-    for (let page = 0; page < MAX_PAGES; page++) {
+    for (let page = 0; page < SAFETY_MAX_PAGES; page++) {
       const posts = await this.client.fetchPage(channel, before);
       if (posts.length === 0) {
         break;
@@ -71,6 +72,15 @@ export class ScrapeService {
       const oldest = posts[0];
       if (oldest.postedAt < cutoff) {
         break;
+      }
+      if (before !== undefined && oldest.messageId >= before) {
+        this.logger.warn(`Pagination stalled for ${channel} at message ${before}`);
+        break;
+      }
+      if ((page + 1) % PROGRESS_EVERY_PAGES === 0) {
+        this.logger.log(
+          `${channel}: page ${page + 1}, reached ${oldest.postedAt.toISOString().slice(0, 16)}, created ${result.created}, skipped ${result.skipped}`,
+        );
       }
       before = oldest.messageId;
       await delay(PAGE_DELAY_MS);

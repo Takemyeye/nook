@@ -22,7 +22,7 @@ const run = async (): Promise<void> => {
     process.env.LOOKBACK_DAYS = String(days);
   }
 
-  const app = await NestFactory.createApplicationContext(ScrapeCliModule, { logger: ['warn', 'error'] });
+  const app = await NestFactory.createApplicationContext(ScrapeCliModule, { logger: ['log', 'warn', 'error'] });
   const scrapeService = app.get(ScrapeService);
   console.log(`Scraping ${env.channels().length} channels, lookback ${env.lookbackDays()} days`);
   for (const channel of env.channels()) {
